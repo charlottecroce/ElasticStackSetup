@@ -1,0 +1,13 @@
+#installation
+apt-get install kibana -y
+
+#configuration
+sed -i 's/*server.port*/server.port: 5061/' /etc/kibana/kibana.yml
+sed -i 's/*server.host*/server.host: 0.0.0.0/' /etc/kibana/kibana.yml
+sed -i 's/*elasticsearch.hosts*/elasticsearch.hosts: [“http://127.0.0.1:9200"]/' /etc/kibana/kibana.yml
+sed -i 's/*elasticsearch.username*/elasticsearch.username: "elastic"/' /etc/kibana/kibana.yml
+sed -i 's/*elasticsearch.password*/elasticsearch.password: "changeme"/' /etc/kibana/kibana.yml
+echo >> 'xpack.encryptedSavedObjects.encryptionKey: "GXlGRCx7GpnjBFXmQtbcvZpdBedJxiYy"' >> /etc/kibana/kibana.yml
+
+#enable
+systemctl enable kibana
