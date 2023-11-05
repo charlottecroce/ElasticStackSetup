@@ -1,3 +1,9 @@
+##
+#  in progress
+##
+
+
+
 #!/bin/sh
 
 #installation
@@ -5,8 +11,11 @@ apt-get install filebeat -y
 
 #configuration
 sed '/output.elasticsearch:/ s/^/#/' -i /etc/filebeat/filebeat.yml
-sed -e '/.hosts: ["localhost:9200"]/ s/^#*/#/' -i /etc/filebeat/filebeat.yml
 
+
+
+# lines below doesn't work
+sed '/.hosts: ["localhost:9200"]/ s/^#*/#/' -i /etc/filebeat/filebeat.yml
 sed -i 's/.output.logstash./output.logstash:/' /etc/filebeat/filebeat.yml
 sed -i 's/.hosts: ["localhost:5044"]/enabled: true\nhosts: [“127.0.0.1:5044”]/' /etc/filebeat/filebeat.yml
 
