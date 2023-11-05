@@ -1,3 +1,5 @@
+#!/bin/sh
+
 #installation
 apt-get install kibana -y
 
