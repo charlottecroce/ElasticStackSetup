@@ -8,7 +8,7 @@ echo "input { beats { port => 5044 ssl => true ssl_certificate => '/etc/pki/tls/
 echo "output { elasticsearch { hosts => ['127.0.0.1:9200'] manage_template => false index => '%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}' action => create } }" > /etc/logstash/conf.d/elasticsearch_output.conf
 
 #service configuration
-sed -i 's/.TimeoutStopSec./TimeoutStopSec=180/' /etc/systemd/system/logstash.service
+sed -i 's/.TimeoutStopSec./TimeoutStopSec=180/g' /etc/systemd/system/logstash.service
 
 #enable
 systemctl enable logstash
