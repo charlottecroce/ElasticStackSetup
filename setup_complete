@@ -8,38 +8,39 @@
 # - runs the status_Elastic_services script, displaying current status of each program
 
 CYAN='\033[1;36m'
+NC='\033[0m'
 
 #setup
-echo -e "${CYAN}Starting setup_elasticsearch..."
+echo -e "${CYAN}Starting setup_elasticsearch...${NC}"
 bash ./setup_elasticsearch
-echo -e "${CYAN}Completed setup_elasticsearch"
+echo -e "${CYAN}Completed setup_elasticsearch${NC}"
 
-echo -e "${CYAN}Starting setup_kibana..."
+echo -e "${CYAN}Starting setup_kibana...${NC}"
 bash ./setup_kibana
-echo -e "${CYAN}Completed setup_kibana"
+echo -e "${CYAN}Completed setup_kibana${NC}"
 
-echo -e "${CYAN}Starting setup_logstash..."
+echo -e "${CYAN}Starting setup_logstash...${NC}"
 bash ./setup_logstash
-echo -e "${CYAN}Completed setup_logstash"
+echo -e "${CYAN}Completed setup_logstash${NC}"
 
-echo -e "${CYAN}Starting setup_filebeat..."
+echo -e "${CYAN}Starting setup_filebeat...${NC}"
 bash ./setup_filebeat
-echo -e "${CYAN}Completed setup_filebeat"
+echo -e "${CYAN}Completed setup_filebeat${NC}"
 
-echo -e "${CYAN}Setup Complete. Starting services"
+echo -e "${CYAN}Setup Complete. Starting services${NC}"
 
 #start
 
-echo -e "${CYAN}Starting elasticsearch..."
+echo -e "${CYAN}Starting elasticsearch...${NC}"
 systemctl start elasticsearch.service
 
-echo -e "${CYAN}Starting kibana..."
+echo -e "${CYAN}Starting kibana...${NC}"
 systemctl start kibana.service
 
-echo -e "${CYAN}Starting logstash..."
+echo -e "${CYAN}Starting logstash...${NC}"
 systemctl start logstash.service
 
-echo -e "${CYAN}Starting filebeat..."
+echo -e "${CYAN}Starting filebeat...${NC}"
 systemctl start filebeat.service
 
 bash ./status_Elastic_services.bash
