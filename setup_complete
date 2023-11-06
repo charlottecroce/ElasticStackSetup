@@ -1,0 +1,13 @@
+#!/bin/bash
+
+#setup
+bash setup_elasticsearch
+bash setup_kibana
+bash setup_logstash
+bash setup_filebeat
+
+#start
+systemctl start elasticsearch.service
+systemctl start kibana.service
+systemctl start logstash.service
+systemctl start filebeat.service

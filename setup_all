@@ -1,6 +1,0 @@
-
-bash setup_elasticsearch
-bash setup_kibana
-bash setup_logstash
-bash setup_filebeat
-
