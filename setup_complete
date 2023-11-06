@@ -1,4 +1,6 @@
 #!/bin/bash
+# 
+# pwd must be the ElasticStackSetup directory
 #
 # Process:
 # - runs the setup script for each individual program
@@ -9,19 +11,19 @@ CYAN='\033[1;36m'
 
 #setup
 echo "${CYAN}Starting setup_elasticsearch..."
-bash setup_elasticsearch
+bash ./setup_elasticsearch
 echo "${CYAN}Completed setup_elasticsearch"
 
 echo "${CYAN}Starting setup_kibana..."
-bash setup_kibana
+bash ./setup_kibana
 echo "${CYAN}Completed setup_kibana"
 
 echo "${CYAN}Starting setup_logstash..."
-bash setup_logstash
+bash ./setup_logstash
 echo "${CYAN}Completed setup_logstash"
 
 echo "${CYAN}Starting setup_filebeat..."
-bash setup_filebeat
+bash ./setup_filebeat
 echo "${CYAN}Completed setup_filebeat"
 
 echo "${CYAN}Setup Complete. Starting services"
@@ -40,5 +42,5 @@ systemctl start logstash.service
 echo "${CYAN}Starting filebeat..."
 systemctl start filebeat.service
 
-bash status_Elastic_services.bash
+bash ./status_Elastic_services.bash
 
