@@ -4,8 +4,8 @@
 apt-get install logstash -y
 
 #pipeline configuration
-echo "input { beats { port => 5044 ssl => true ssl_certificate => '/etc/pki/tls/certs/logstash-forwarder.crt' ssl_key => '/etc/pki/tls/private/logstash-forwarder.key' } }" > /etc/logstash/conf.d/beats_input.conf
-echo "output { elasticsearch { hosts => ['127.0.0.1:9200'] manage_template => false index => '%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}' action => create } }" > /etc/logstash/conf.d/elasticsearch_output.conf
+echo -e "input { \n beats { \n\t port => 5044 \n\t ssl => true \n\t ssl_certificate => '/etc/pki/tls/certs/logstash-forwarder.crt' \n\t ssl_key => '/etc/pki/tls/private/logstash-forwarder.key' \n } \n }" > /etc/logstash/conf.d/beats_input.conf
+echo -e "output { \n elasticsearch { \n\t hosts => ['127.0.0.1:9200'] \n\t manage_template => false \n\t index => '%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}' \n\t action => create \n } \n }" > /etc/logstash/conf.d/elasticsearch_output.conf
 
 #service configuration
 sed -i 's/.TimeoutStopSec.*/TimeoutStopSec=180/' /etc/systemd/system/logstash.service
