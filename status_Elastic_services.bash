@@ -10,7 +10,7 @@ NC='\033[0m'
 
 for serv in "elasticsearch" "kibana" "logstash" "filebeat"
 do
-    serv_status=systemctl status $serv.service | grep Active)
+    serv_status=$(systemctl status $serv.service | grep Active)
     if [[ "${serv_status}" == *"running"* ]]; then
         COLOR=${GREEN}
     elif [[ "${serv_status}" == *"failed"* ]]; then
