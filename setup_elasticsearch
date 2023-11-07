@@ -9,7 +9,7 @@ apt update && apt-get install elasticsearch -y
 #configuration
 sed -i 's/.http.port.*/http.port: 9200/' /etc/elasticsearch/elasticsearch.yml
 sed -i 's/.network.host.*/network.host: 0.0.0.0/' /etc/elasticsearch/elasticsearch.yml
-sed -i 's/.discovery.seed_hosts.*/discovery.seed_hosts: ["127.0.0.1"]/' /etc/elasticsearch/elasticsearch.yml
+sed -i 's/.discovery.seed_hosts.*/discovery.seed_hosts: ["localhost", "127.0.0.1"]/' /etc/elasticsearch/elasticsearch.yml
 
 #enabling
 systemctl daemon-reload
