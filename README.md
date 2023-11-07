@@ -1,5 +1,7 @@
 # ElasticStackSetup
 
+![elkbanner](https://github.com/nathancroce/ElasticStackSetup/assets/90940521/832c0fbb-ca52-4099-9ad9-4b600c1af64d)
+
 These scripts should be useful in setting up and configuring a locally-run Elastic Stack on a Linux machine
 
 For an automated setup, make sure your working directory is `ElasticStackSetup/`, and run `setup_complete` as root
