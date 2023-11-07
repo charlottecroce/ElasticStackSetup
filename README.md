@@ -17,4 +17,9 @@ sudo bash setup_complete
 
 <br>
 
+> [!Note]
+> As of 11/7/23, this has yet to succeed in building a working Stack. More development is needed
+
+
+<br>
 Let's work together! All contributions are appreciated!
