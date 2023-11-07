@@ -1,5 +1,6 @@
 #!/bin/bash
-# 
+#
+# must run as root
 # pwd must be the ElasticStackSetup directory
 #
 # Process:
@@ -7,10 +8,13 @@
 # - starts each program
 # - runs the status_Elastic_services script, displaying current status of each program
 
+start_time=`date +%s`
+
 CYAN='\033[1;36m'
 NC='\033[0m'
 
-#setup
+# Setup Services
+
 echo -e "${CYAN}Starting setup_elasticsearch...${NC}"
 bash ./setup_elasticsearch
 echo -e "${CYAN}Completed setup_elasticsearch${NC}"
@@ -29,7 +33,7 @@ echo -e "${CYAN}Completed setup_filebeat${NC}"
 
 echo -e "${CYAN}Setup Complete. Starting services${NC}"
 
-#start
+# Start Services
 
 echo -e "${CYAN}Starting elasticsearch...${NC}"
 systemctl start elasticsearch.service
@@ -43,5 +47,12 @@ systemctl start logstash.service
 echo -e "${CYAN}Starting filebeat...${NC}"
 systemctl start filebeat.service
 
+# Display Service Status
+
 bash ./status_Elastic_services.bash
 
+# Runtime Stats
+
+end_time=`date +%s`
+runtime=$((end_time-start_time))
+echo -e "${CYAN}Runtime: ${runtime}${NC}"
