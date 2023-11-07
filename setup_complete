@@ -55,4 +55,4 @@ bash ./status_Elastic_services.bash
 
 end_time=`date +%s`
 runtime=$((end_time-start_time))
-echo -e "${CYAN}Runtime: ${runtime}${NC}"
+echo -e "${CYAN}Runtime: ${runtime} seconds${NC}"
