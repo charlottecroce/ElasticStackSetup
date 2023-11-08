@@ -4,7 +4,7 @@
 
 These scripts should be useful in setting up and configuring a locally-run Elastic Stack on a Linux machine
 
-For an automated setup, make sure your working directory is `ElasticStackSetup/`, and run `setup_complete` as root
+For an automated setup with apt packages, make sure your working directory is `ElasticStackSetup/`, and run `setup_apt` as root
 
 ### How to install & run on your Ubuntu VM
 
@@ -12,13 +12,13 @@ For an automated setup, make sure your working directory is `ElasticStackSetup/`
 sudo apt-get install git
 sudo git clone https://github.com/nathancroce/ElasticStackSetup
 cd ElasticStackSetup
-sudo bash setup_complete
+sudo bash setup_apt
 ```
 
 <br>
 
 > [!Note]
-> As of 11/7/23, this has yet to succeed in building a working Stack. More development is needed
+> As of 11/8/23, this has yet to succeed in building a working Stack. More development is needed
 
 
 <br>
