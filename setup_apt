@@ -54,7 +54,7 @@ sed -i 's/.elasticsearch.hosts.*/elasticsearch.hosts: ["localhost:9200"]/' /etc/
 sed -i 's/.elasticsearch.username.*/elasticsearch.username: "elastic"/' /etc/kibana/kibana.yml
 sed -i 's/.elasticsearch.password.*/elasticsearch.password: "changeme"/' /etc/kibana/kibana.yml
 
-# default encryption keys. these probably should be changed so we don't all have the same keys
+# some default encryption keys. these should be changed
 echo 'xpack.encryptedSavedObjects.encryptionKey: "GXlGRCx7GpnjBFXmQtbcvZpdBedJxiYy"' | tee -a /etc/kibana/kibana.yml
 echo 'xpack.security.encryptionKey: "5qWdAoNqEGTSRSkjbV4Z8yi3Aro1tmYM"' | tee -a /etc/kibana/kibana.yml
 echo 'xpack.reporting.encryptionKey: "lr9tH2GY2i07Ig0AtkTYCFABTXfuZGsK"' | tee -a /etc/kibana/kibana.yml
@@ -78,6 +78,10 @@ apt-get install logstash -y
 sudo mkdir -p /etc/pki/tls/certs
 sudo mkdir /etc/pki/tls/private
 sudo openssl req -config /etc/ssl/openssl.cnf -x509 -days 3650 -batch -nodes -newkey rsa:2048 -keyout /etc/pki/tls/private/logstash-forwarder.key -out /etc/pki/tls/certs/logstash-forwarder.crt
+
+# Plugins
+/usr/share/logstash/bin/logstash-plugin install logstash-input-beats
+/usr/share/logstash/bin/logstash-plugin install logstash-output-elasticsearch
 
 # Starter Pipeline
 echo -e "input{\n\tbeats{\n\t\tport => 5044\n\t\tssl => true\n\t\tssl_certificate => '/etc/pki/tls/certs/logstash-forwarder.crt'\n\t\tssl_key => '/etc/pki/tls/private/logstash-forwarder.key'\n\t}\n}\noutput{\n\telasticsearch{\n\t\thosts => ['localhost:9200', '127.0.0.1:9200']\n\t\tmanage_template => false\n\t\tindex => '%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}'\n\t\taction => create\n\t}\n}" > /etc/logstash/conf.d/beats_to_elasticsearch.conf
