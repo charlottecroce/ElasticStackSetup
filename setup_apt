@@ -120,7 +120,7 @@ apt-get install filebeat -y
 # Starter Configuration
   # commenting/disabling elasticsearch output
 sed -i '/output.elasticsearch:/ s/^/#/' /etc/filebeat/filebeat.yml
-sed -i '/.output.elasticsearch:/a \ \ enabled: false' /etc/filebeat/filebeat.yml
+# sed -i '/.output.elasticsearch:/a \ \ enabled: false' /etc/filebeat/filebeat.yml
 sed -i '/.*localhost:9200.*/ s/^/#/' /etc/filebeat/filebeat.yml
 
   # uncommenting/enabling logstash output
