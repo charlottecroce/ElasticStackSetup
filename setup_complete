@@ -9,9 +9,13 @@
 # - runs the status_Elastic_services script, displaying current status of each program
 
 start_time=`date +%s`
-
 CYAN='\033[1;36m'
 NC='\033[0m'
+
+apt-get install curl -y
+curl -fsSL https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" >> /etc/apt/sources.list.d/elastic-7.x.list
+apt update
 
 # Setup Services
 
