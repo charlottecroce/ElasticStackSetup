@@ -10,6 +10,7 @@ CYAN='\033[1;36m'
 NC='\033[0m'
 
 # Dependencies
+echo -e "${CYAN}Installing Dependencies${NC}"
 apt-get install openjdk-11-jdk -y
 apt-get install wget -y
 apt-get install apt-transport-https -y
@@ -21,27 +22,22 @@ echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" >> /etc/apt
 apt update
 systemctl daemon-reload # reload systemd files
 
-# Setup Services
-
 #########################################
-
 #
 # ELASTICSEARCH
 #
 echo -e "${CYAN}Starting elasticsearch setup...${NC}"
 
 apt-get install elasticsearch -y
-cp ./elasticsearch.yml /etc/elasticsearch/elasticsearch.yml
-
-# /usr/share/elasticsearch/bin/elasticsearch-certutil ca
-# ENTER ENTER
-# /usr/share/elasticsearch/bin/elasticsearch-certutil cert --ca elastic-stack-ca.p12
-# ENTER ENTER
-
+cp ./config-files/elasticsearch.yml /etc/elasticsearch/elasticsearch.yml
 
 #
 # SECURITY NOT CONFIGURED YET
 #
+# /usr/share/elasticsearch/bin/elasticsearch-certutil ca
+# enter required
+# /usr/share/elasticsearch/bin/elasticsearch-certutil cert --ca elastic-stack-ca.p12
+# enter required
 # Certificates are moved under config/certs directory
 #mkdir /usr/share/elasticsearch/config
 #mkdir /usr/share/elasticsearch/config/certs
@@ -51,19 +47,16 @@ cp ./elasticsearch.yml /etc/elasticsearch/elasticsearch.yml
 
 systemctl enable elasticsearch # Enable Service
 
-echo -e "${CYAN}Completed elasticsearch setup${NC}"
 #########################################
-
 #
 # KIBANA
 #
 echo -e "${CYAN}Starting kibana setup...${NC}"
 
 apt-get install kibana -y
-cp ./kibana.yml /etc/kibana/kibana.yml
+cp ./config-files/kibana.yml /etc/kibana/kibana.yml
 systemctl enable kibana # Enable Service
 
-echo -e "${CYAN}Completed kibana setup${NC}"
 #########################################
 
 #
@@ -83,14 +76,13 @@ sudo openssl req -config /etc/ssl/openssl.cnf -x509 -days 3650 -batch -nodes -ne
 /usr/share/logstash/bin/logstash-plugin install logstash-output-elasticsearch
 
 # Starter Pipeline
-cp ./beats_to_elasticsearch.conf /etc/logstash/conf.d/beats_to_elasticsearch.conf
+cp ./config-files/beats_to_elasticsearch.conf /etc/logstash/conf.d/beats_to_elasticsearch.conf
 
 # Logstash can take a very long time to shut down. This kills the process after 3 minutes of shutting down
 sed -i 's/.TimeoutStopSec.*/TimeoutStopSec=180/' /etc/systemd/system/logstash.service
 
 systemctl enable logstash # Enable Service
 
-echo -e "${CYAN}Completed logstash setup${NC}"
 #########################################
 
 #
@@ -99,7 +91,7 @@ echo -e "${CYAN}Completed logstash setup${NC}"
 echo -e "${CYAN}Starting filebeat setup...${NC}"
 
 apt-get install filebeat -y
-cp ./filebeat.yml /etc/filebeat/filebeat.yml
+cp ./config-files/filebeat.yml /etc/filebeat/filebeat.yml
 
 filebeat modules enable system
 filebeat modules enable logstash
@@ -109,8 +101,18 @@ filebeat setup — index-management -E output.logstash.enabled=false -E ‘outpu
 
 systemctl enable filebeat # Enable Service
 
-echo -e "${CYAN}Completed filebeat setup${NC}"
 #########################################
+#
+# APM SERVER
+#
+echo -e "${CYAN}Starting APM server setup...${NC}"
+
+apt-get install apm-server -y
+cp ./config-files/apm-server.yml /etc/apm-server/apm-server.yml
+systemctl enable apm-server # Enable Service
+
+#########################################
+
 
 echo -e "${CYAN}Installations/Configurations Complete. Starting services${NC}"
 
@@ -125,6 +127,9 @@ systemctl start logstash.service
 
 echo -e "${CYAN}Starting filebeat...${NC}"
 systemctl start filebeat.service
+
+echo -e "${CYAN}Starting APM server...${NC}"
+systemctl start apm-server.service
 
 # Display Service Status
 bash ./status_Elastic_services.bash
