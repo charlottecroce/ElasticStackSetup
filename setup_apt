@@ -9,12 +9,12 @@ start_time=`date +%s`
 CYAN='\033[1;36m'
 NC='\033[0m'
 
-
-sudo apt-get install openjdk-11-jdk -y
-sudo apt-get install wget -y
-sudo apt-get install apt-transport-https -y
-sudo apt-get install curl -y
-sudo apt-get install gnupg2 -y
+# Dependencies
+apt-get install openjdk-11-jdk -y
+apt-get install wget -y
+apt-get install apt-transport-https -y
+apt-get install curl -y
+apt-get install gnupg2 -y
 
 curl -fsSL https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
 echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" >> /etc/apt/sources.list.d/elastic-7.x.list
@@ -30,21 +30,11 @@ systemctl daemon-reload # reload systemd files
 #
 echo -e "${CYAN}Starting elasticsearch setup...${NC}"
 
-# Installation
 apt-get install elasticsearch -y
-
-# Starter Configuration
-sed -i 's/.http.port.*/http.port: 9200/' /etc/elasticsearch/elasticsearch.yml
-sed -i 's/.network.host.*/network.host: 0.0.0.0/' /etc/elasticsearch/elasticsearch.yml
-sed -i '/.*The default lists of hosts is ["127.0.0.1".*/a discovery.type: single-node' /etc/elasticsearch/elasticsearch.yml
-
-#sed -i '/.*---.Node.---.*/a cluster.initial_master_nodes: localhost' /etc/elasticsearch/elasticsearch.yml
-#sed -i 's/.discovery.seed_hosts.*/discovery.seed_hosts: ["localhost", "127.0.0.1"]/' /etc/elasticsearch/elasticsearch.yml
-
+cp ./elasticsearch.yml /etc/elasticsearch/elasticsearch.yml
 systemctl enable elasticsearch # Enable Service
 
 echo -e "${CYAN}Completed elasticsearch setup${NC}"
-
 #########################################
 
 #
@@ -52,26 +42,11 @@ echo -e "${CYAN}Completed elasticsearch setup${NC}"
 #
 echo -e "${CYAN}Starting kibana setup...${NC}"
 
-# Installation
 apt-get install kibana -y
-
-# Starter Configuration
-sed -i 's/.server.port.*/server.port: 5061/' /etc/kibana/kibana.yml
-sed -i 's/.server.host.*/server.host: 0.0.0.0/' /etc/kibana/kibana.yml
-sed -i 's/.elasticsearch.hosts.*/elasticsearch.hosts: ["localhost:9200"]/' /etc/kibana/kibana.yml
-sed -i 's/.elasticsearch.username.*/elasticsearch.username: "elastic"/' /etc/kibana/kibana.yml
-sed -i 's/.elasticsearch.password.*/elasticsearch.password: "changeme"/' /etc/kibana/kibana.yml
-
-# some default encryption keys. these should be changed
-echo 'xpack.encryptedSavedObjects.encryptionKey: "GXlGRCx7GpnjBFXmQtbcvZpdBedJxiYy"' | tee -a /etc/kibana/kibana.yml
-echo 'xpack.security.encryptionKey: "5qWdAoNqEGTSRSkjbV4Z8yi3Aro1tmYM"' | tee -a /etc/kibana/kibana.yml
-echo 'xpack.reporting.encryptionKey: "lr9tH2GY2i07Ig0AtkTYCFABTXfuZGsK"' | tee -a /etc/kibana/kibana.yml
-
-
+cp ./kibana.yml /etc/kibana/kibana.yml
 systemctl enable kibana # Enable Service
 
 echo -e "${CYAN}Completed kibana setup${NC}"
-
 #########################################
 
 #
@@ -79,7 +54,6 @@ echo -e "${CYAN}Completed kibana setup${NC}"
 #
 echo -e "${CYAN}Starting logstash setup...${NC}"
 
-# Installation
 apt-get install logstash -y
 
 # SSL cert&key
@@ -91,64 +65,37 @@ sudo openssl req -config /etc/ssl/openssl.cnf -x509 -days 3650 -batch -nodes -ne
 /usr/share/logstash/bin/logstash-plugin install logstash-input-beats
 /usr/share/logstash/bin/logstash-plugin install logstash-output-elasticsearch
 
-#/usr/share/logstash/bin/logstash-plugin install logstash-input-file
-#/usr/share/logstash/bin/logstash-plugin install logstash-output-file
-#\n\tfile{\n\t\tpath => '/var/log/syslog'\n\t}
-#n\tfile{\n\t\tpath => "/var/log/logstash/logstash-file-output.log"\n\t}
-#touch /var/log/logstash/logstash-file-output.log
-
 # Starter Pipeline
-echo -e "input{\n\tbeats{\n\t\tport => 5044\n\t\tssl => true\n\t\tssl_certificate => '/etc/pki/tls/certs/logstash-forwarder.crt'\n\t\tssl_key => '/etc/pki/tls/private/logstash-forwarder.key'\n\t}\n}\noutput{\n\telasticsearch{\n\t\thosts => ['localhost:9200', '127.0.0.1:9200']\n\t\tmanage_template => false\n\t\tindex => '%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}'\n\t\taction => create\n\t}\\n}" > /etc/logstash/conf.d/beats_to_elasticsearch.conf
+cp ./beats_to_elasticsearch.conf /etc/logstash/conf.d/beats_to_elasticsearch.conf
 
-# Service Config
 # Logstash can take a very long time to shut down. This kills the process after 3 minutes of shutting down
 sed -i 's/.TimeoutStopSec.*/TimeoutStopSec=180/' /etc/systemd/system/logstash.service
 
 systemctl enable logstash # Enable Service
-echo -e "${CYAN}Completed logstash setup${NC}"
 
+echo -e "${CYAN}Completed logstash setup${NC}"
 #########################################
 
 #
 # FILEBEAT
 #
-# needs to be set up manually as of now
-# input.filebeat
-#   enabled: true
-#
-#
-# filebeat -e
-#
-
 echo -e "${CYAN}Starting filebeat setup...${NC}"
 
-# Installation
 apt-get install filebeat -y
-
-# Starter Configuration
-  # commenting/disabling elasticsearch output
-sed -i '/output.elasticsearch:/ s/^/#/' /etc/filebeat/filebeat.yml
-# sed -i '/.output.elasticsearch:/a \ \ enabled: false' /etc/filebeat/filebeat.yml
-sed -i '/.*localhost:9200.*/ s/^/#/' /etc/filebeat/filebeat.yml
-
-  # uncommenting/enabling logstash output
-sed -i '/output.logstash:/ s/#//' /etc/filebeat/filebeat.yml
-sed -i '/.*localhost:5044.*/ s/#//' /etc/filebeat/filebeat.yml
+cp ./filebeat.yml /etc/filebeat/filebeat.yml
 
 filebeat modules enable system
 filebeat modules enable logstash
 filebeat modules enable kibana
 filebeat setup --pipelines --modules system
-
 filebeat setup — index-management -E output.logstash.enabled=false -E ‘output.elasticsearch.hosts=[“localhost:9200”]’
 
 systemctl enable filebeat # Enable Service
 
 echo -e "${CYAN}Completed filebeat setup${NC}"
-
 #########################################
 
-echo -e "${CYAN}Setup Complete. Starting services${NC}"
+echo -e "${CYAN}Installations/Configurations Complete. Starting services${NC}"
 
 echo -e "${CYAN}Starting elasticsearch...${NC}"
 systemctl start elasticsearch.service
@@ -163,11 +110,9 @@ echo -e "${CYAN}Starting filebeat...${NC}"
 systemctl start filebeat.service
 
 # Display Service Status
-
 bash ./status_Elastic_services.bash
 
 # Runtime Stats
-
 end_time=`date +%s`
 runtime=$((end_time-start_time))
 echo -e "${CYAN}Runtime: ${runtime} seconds${NC}"
