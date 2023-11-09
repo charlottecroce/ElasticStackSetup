@@ -9,7 +9,13 @@ start_time=`date +%s`
 CYAN='\033[1;36m'
 NC='\033[0m'
 
-apt-get install curl -y
+
+sudo apt-get install openjdk-11-jdk -y
+sudo apt-get install wget -y
+sudo apt-get install apt-transport-https -y
+sudo apt-get install curl -y
+sudo apt-get install gnupg2 -y
+
 curl -fsSL https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
 echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" >> /etc/apt/sources.list.d/elastic-7.x.list
 apt update
@@ -28,10 +34,12 @@ echo -e "${CYAN}Starting elasticsearch setup...${NC}"
 apt-get install elasticsearch -y
 
 # Starter Configuration
-sed -i '/.*---.Node.---.*/a cluster.initial_master_nodes: localhost' /etc/elasticsearch/elasticsearch.yml
 sed -i 's/.http.port.*/http.port: 9200/' /etc/elasticsearch/elasticsearch.yml
 sed -i 's/.network.host.*/network.host: 0.0.0.0/' /etc/elasticsearch/elasticsearch.yml
-sed -i 's/.discovery.seed_hosts.*/discovery.seed_hosts: ["localhost", "127.0.0.1"]/' /etc/elasticsearch/elasticsearch.yml
+sed -i '/.*The default lists of hosts is ["127.0.0.1".*/a discovery.type: single-node' /etc/elasticsearch/elasticsearch.yml
+
+#sed -i '/.*---.Node.---.*/a cluster.initial_master_nodes: localhost' /etc/elasticsearch/elasticsearch.yml
+#sed -i 's/.discovery.seed_hosts.*/discovery.seed_hosts: ["localhost", "127.0.0.1"]/' /etc/elasticsearch/elasticsearch.yml
 
 systemctl enable elasticsearch # Enable Service
 
@@ -129,7 +137,10 @@ sed -i '/.*localhost:5044.*/ s/#//' /etc/filebeat/filebeat.yml
 
 filebeat modules enable system
 filebeat modules enable logstash
+filebeat modules enable kibana
 filebeat setup --pipelines --modules system
+
+filebeat setup — index-management -E output.logstash.enabled=false -E ‘output.elasticsearch.hosts=[“localhost:9200”]’
 
 systemctl enable filebeat # Enable Service
 
