@@ -38,11 +38,15 @@ cp ./elasticsearch.yml /etc/elasticsearch/elasticsearch.yml
 # /usr/share/elasticsearch/bin/elasticsearch-certutil cert --ca elastic-stack-ca.p12
 # ENTER ENTER
 
+
+#
+# SECURITY NOT CONFIGURED YET
+#
 # Certificates are moved under config/certs directory
-mkdir /usr/share/elasticsearch/config
-mkdir /usr/share/elasticsearch/config/certs
-mv ./elastic-certificates.p12 /usr/share/elasticsearch/config/certs
-mv ./elastic-stack-ca.p12 /usr/share/elasticsearch/config/certs
+#mkdir /usr/share/elasticsearch/config
+#mkdir /usr/share/elasticsearch/config/certs
+#mv ./elastic-certificates.p12 /usr/share/elasticsearch/config/certs
+#mv ./elastic-stack-ca.p12 /usr/share/elasticsearch/config/certs
 
 
 systemctl enable elasticsearch # Enable Service
