@@ -32,6 +32,16 @@ echo -e "${CYAN}Starting elasticsearch setup...${NC}"
 
 apt-get install elasticsearch -y
 cp ./elasticsearch.yml /etc/elasticsearch/elasticsearch.yml
+
+# /usr/share/elasticsearch/bin/elasticsearch-certutil ca
+# ENTER ENTER
+# /usr/share/elasticsearch/bin/elasticsearch-certutil cert --ca elastic-stack-ca.p12
+
+# Certificates are moved under config/certs directory
+mv elastic-certificates.p12 config/certs/
+mv elastic-stack-ca.p12 config/certs/
+
+
 systemctl enable elasticsearch # Enable Service
 
 echo -e "${CYAN}Completed elasticsearch setup${NC}"
