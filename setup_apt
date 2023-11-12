@@ -105,11 +105,11 @@ systemctl enable filebeat # Enable Service
 #
 # APM SERVER
 #
-echo -e "${CYAN}Starting APM server setup...${NC}"
+#echo -e "${CYAN}Starting APM server setup...${NC}"
 
-apt-get install apm-server -y
-cp ./config-files/apm-server.yml /etc/apm-server/apm-server.yml
-systemctl enable apm-server # Enable Service
+#apt-get install apm-server -y
+#cp ./config-files/apm-server.yml /etc/apm-server/apm-server.yml
+#systemctl enable apm-server # Enable Service
 
 #########################################
 
@@ -128,8 +128,8 @@ systemctl start logstash.service
 echo -e "${CYAN}Starting filebeat...${NC}"
 systemctl start filebeat.service
 
-echo -e "${CYAN}Starting APM server...${NC}"
-systemctl start apm-server.service
+#echo -e "${CYAN}Starting APM server...${NC}"
+#systemctl start apm-server.service
 
 # Display Service Status
 bash ./status_Elastic_services.bash
