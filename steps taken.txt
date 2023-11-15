@@ -11,3 +11,18 @@
 
 
 /usr/share/elasticsearch/bin/elasticsearch-users list #lists users
+
+
+
+#
+# SECURITY NOT CONFIGURED YET
+#
+# /usr/share/elasticsearch/bin/elasticsearch-certutil ca
+# enter required
+# /usr/share/elasticsearch/bin/elasticsearch-certutil cert --ca elastic-stack-ca.p12
+# enter required
+# Certificates are moved under config/certs directory
+#mkdir /usr/share/elasticsearch/config
+#mkdir /usr/share/elasticsearch/config/certs
+#mv ./elastic-certificates.p12 /usr/share/elasticsearch/config/certs
+#mv ./elastic-stack-ca.p12 /usr/share/elasticsearch/config/certs
