@@ -101,6 +101,7 @@ systemctl start logstash.service
 echo -e "${CYAN}Starting filebeat...${NC}"
 systemctl start filebeat.service
 
+
 # Display Service Status
 bash ./status_Elastic_services.bash
 
