@@ -1,32 +1,33 @@
 #
-# 
+# must run as root
+# setup default passwords
 #
-
 
 CYAN='\033[1;36m'
 NC='\033[0m'
 
 # Dependencies
-echo -e "${CYAN}THIS SCRIPT IS NOT AUTOMATED. YOU MUST ENTER AND REMEMBER YOUR PASSWORDS. VIEWING SOURCE CODE BEFORE RUNNING IS ADVISED${NC}"
-read -p "Continue (y/n)?" CONT
-if [ "$CONT" = "y" ]; then
-  echo "Enabling passwords...";
-else
-  exit;
-fi
+apt-get install pwgen
+
+ELASTICPASS=$(pwgen 16 1)
+KIBANAPASS=$(pwgen 16 1)
+LOGSTASHPASS=$(pwgen 16 1)
+BEATSPASS=$(pwgen 16 1)
+REMOTEMONITORINGUSERPASS=$(pwgen 16 1)
 
 sed -i '/.*xpack.security.enabled.*/ s/^#//' /etc/elasticsearch/elasticsearch.yml
 
-echo -e "${CYAN}Enter passwords for the default users for each service. I set them all to 'password' or 'changeme' for convenience, and change them later${NC}"
-/usr/share/elasticsearch/bin/elasticsearch-setup-passwords interactive
+printf 'y\n${ELASTICPASS}\n${ELASTICPASS}\n${KIBANAPASS}\n${KIBANAPASS}\n${LOGSTASHPASS}\n${LOGSTASHPASS}\n${BEATSPASS}\n${BEATSPASS}\n${REMOTEMONITORINGUSERPASS}\n${REMOTEMONITORINGUSERPASS}' | /usr/share/elasticsearch/bin/elasticsearch-setup-passwords interactive
 
-read -p "${CYAN}Enter exactly what you entered for your kibana_system password${NC}" KIBANA_SYSTEM_PASSWORD
+sed -i 's/.*elasticsearch.password.*/elasticsearch.password: "${KIBANAPASS}"/' /etc/kibana/kibana.yml
+printf '${KIBANAPASS}' | /usr/share/kibana/bin/kibana-keystore add elasticsearch.password
 
-sed -i 's/.*elasticsearch.password.*/elasticsearch.password: "${KIBANA_SYSTEM_PASSWORD}"/' /etc/kibana/kibana.yml
-
-/usr/share/kibana/bin/kibana-keystore add elasticsearch.password
-# enter password
-
-
-
-/usr/share/elasticsearch/bin/elasticsearch-users list #lists users
+echo -e "${CYAN}THESE PASSWORDS ARE NOT STORED ANYWHERE. SAVE THEM SOMEPLACE SAFE${NC}"
+echo -e "${CYAN}|${NC}"
+echo -e "${CYAN}elastic password: ${ELASTICPASS}${NC}"
+echo -e "${CYAN}kibana_system password: ${KIBANAPASS}${NC}"
+echo -e "${CYAN}logstash_system password: ${LOGSTASHPASS}${NC}"
+echo -e "${CYAN}beats_system password: ${BEATSPASS}${NC}"
+echo -e "${CYAN}remote_monitoring_user password: ${REMOTEMONITORINGUSERPASS}${NC}"
+echo -e "${CYAN}|${NC}"
+echo -e "${CYAN}THESE PASSWORDS ARE NOT STORED ANYWHERE. SAVE THEM SOMEPLACE SAFE${NC}"
