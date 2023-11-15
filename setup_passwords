@@ -17,12 +17,18 @@ REMOTEMONITORINGUSERPASS=$(pwgen 16 1)
 
 sed -i '/.*xpack.security.enabled.*/ s/^#//' /etc/elasticsearch/elasticsearch.yml
 
+echo -e "${CYAN}Restarting Elasticsearch with security features enabled...${NC}"
+systemctl restart kibana.service
+
 printf 'y\n${ELASTICPASS}\n${ELASTICPASS}\n${KIBANAPASS}\n${KIBANAPASS}\n${LOGSTASHPASS}\n${LOGSTASHPASS}\n${BEATSPASS}\n${BEATSPASS}\n${REMOTEMONITORINGUSERPASS}\n${REMOTEMONITORINGUSERPASS}' | /usr/share/elasticsearch/bin/elasticsearch-setup-passwords interactive
 
 sed -i 's/.*elasticsearch.password.*/elasticsearch.password: "${KIBANAPASS}"/' /etc/kibana/kibana.yml
 printf '${KIBANAPASS}' | /usr/share/kibana/bin/kibana-keystore add elasticsearch.password
 
-echo -e "${CYAN}THESE PASSWORDS ARE NOT STORED ANYWHERE. SAVE THEM SOMEPLACE SAFE${NC}"
+echo -e "${CYAN}\nRestarting Kibana with security features enabled...${NC}"
+systemctl restart kibana.service
+
+echo -e "${CYAN}\nTHESE PASSWORDS ARE NOT STORED ANYWHERE. SAVE THEM SOMEPLACE SAFE${NC}"
 echo -e "${CYAN}|${NC}"
 echo -e "${CYAN}elastic password: ${ELASTICPASS}${NC}"
 echo -e "${CYAN}kibana_system password: ${KIBANAPASS}${NC}"
