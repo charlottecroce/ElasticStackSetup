@@ -1,0 +1,13 @@
+#es.yml# xpack.security.enabled: true
+/usr/share/elasticsearch/bin/elasticsearch-setup-passwords interactive
+## i set all passwords to 'password'
+
+#k.yml# elasticsearch.username: "kibana_system"
+        elasticsearch.password: "password"
+
+/usr/share/kibana/bin/kibana-keystore add elasticsearch.password
+# enter password
+
+
+
+/usr/share/elasticsearch/bin/elasticsearch-users list #lists users
