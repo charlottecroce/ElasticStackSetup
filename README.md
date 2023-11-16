@@ -30,7 +30,7 @@ This is the first script to run, and it **MUST** be run from the `ElasticStackSe
 cd ElasticStackSetup
 sudo bash setup_install
 ```
-Runtime for this script is about 400 seconds on my VM. If you receive errors and the runtime is much less than that, running the script again always works for me (idk why, but sometimes it just doesn't run correctly).
+Runtime for this script is about 400 seconds on my VM.
 
 ### 3. Run [setup_passwords](https://github.com/nathancroce/ElasticStackSetup/blob/main/setup_passwords)
 This is the second script to run. It will create default random passwords for `elastic`, `kibana_system`, `logstash_system`, `beats_system`, `apm_system`, and `remote_monitoring_user`. Make sure to save the passwords when they are outputted to the terminal at the end of the script.
