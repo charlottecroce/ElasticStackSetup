@@ -81,7 +81,7 @@ filebeat modules enable system
 filebeat modules enable logstash
 filebeat modules enable kibana
 filebeat setup --pipelines --modules system
-filebeat setup — index-management -E output.logstash.enabled=false -E ‘output.elasticsearch.hosts=[“localhost:9200”]’
+filebeat setup --index-management -E output.logstash.enabled=false -E ‘output.elasticsearch.hosts=[“localhost:9200”]’
 
 systemctl enable filebeat # Enable Service
 
