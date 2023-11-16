@@ -12,6 +12,12 @@ All contributions are appreciated!
 
 ## How to install & run
 
+### 0. Make sure your machine is up to date
+```
+sudo apt update
+sudo apt upgrade
+```
+
 ### 1. Download this Repository
 ```
 sudo apt-get install git
