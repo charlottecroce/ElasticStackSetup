@@ -1,7 +1,7 @@
 # ElasticStackSetup
 
 > [!Note]
-> As of 11/16/23, this will build an Elastic Stack with security features enabled
+> As of 11/16/23, this will build an Elastic Stack with some security features enabled. HTTPS will be configured next week
 
 ![elkbanner](https://github.com/nathancroce/ElasticStackSetup/assets/90940521/832c0fbb-ca52-4099-9ad9-4b600c1af64d)
 
