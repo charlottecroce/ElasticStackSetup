@@ -18,7 +18,7 @@ sudo git clone https://github.com/nathancroce/ElasticStackSetup
 ```
 
 ## 2. Run [setup_install](https://github.com/nathancroce/ElasticStackSetup/blob/main/setup_install)
-This is the first script to run, and it should be run from the `ElasticStackSetup` directory. It will install elasticsearch, kibana, logstash, and filbeats as apt packages. This will only install and configure the essentials: security will be disabled
+This is the first script to run, and it **MUST** be run from the `ElasticStackSetup` directory. It will install elasticsearch, kibana, logstash, and filbeats as apt packages. This will only install and configure the essentials: security will be disabled
 ```
 cd ElasticStackSetup
 sudo bash setup_install
