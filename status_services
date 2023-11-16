@@ -1,7 +1,8 @@
-#!/bin/sh
-
+#!/bin/bash
+#
 # this script returns the status of the relevant Elastic Stack services, which currently includes: elasticsearch, kibana, logstash, and filebeat
 # to add/remove a service, edit the list of services on line 11
+#
 
 GREEN='\033[1;32m'
 RED='\033[1;31m'
