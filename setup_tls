@@ -1,0 +1,23 @@
+
+/usr/share/elasticsearch/bin/elasticsearch-certutil ca
+#enter
+#enter(or ca password)
+
+/usr/share/elasticsearch/bin/elasticsearch-certutil cert --ca elastic-stack-ca.p12
+#enter(or ca password)
+#enter
+#enter cert password
+
+#es.yml
+
+sed -i '/.*cluster.name.*/ s/^#//' /etc/elasticsearch/elasticsearch.yml
+sed -i '/.*node.name.*/ s/^#//' /etc/elasticsearch/elasticsearch.yml
+sed -i '/.*xpack.security.transport.ssl.enabled.*/ s/^#//' /etc/elasticsearch/elasticsearch.yml
+sed -i '/.*xpack.security.transport.ssl.verification_mode.*/ s/^#//' /etc/elasticsearch/elasticsearch.yml
+sed -i '/.*xpack.security.transport.ssl.client_authentication.*/ s/^#//' /etc/elasticsearch/elasticsearch.yml
+sed -i '/.*xpack.security.transport.ssl.keystore.path.*/ s/^#//' /etc/elasticsearch/elasticsearch.yml
+sed -i '/.*xpack.security.transport.ssl.truststore.path.*/ s/^#//' /etc/elasticsearch/elasticsearch.yml
+
+./bin/elasticsearch-keystore add xpack.security.transport.ssl.keystore.secure_password
+#cert password
+
