@@ -1,12 +1,11 @@
 
-/usr/share/elasticsearch/bin/elasticsearch-certutil ca
-#enter
-#enter(or ca password)
 
-/usr/share/elasticsearch/bin/elasticsearch-certutil cert --ca elastic-stack-ca.p12
-#enter(or ca password)
-#enter
-#enter cert password
+CAPASS=$(pwgen 16 1)
+CERTIFICATEPASS=$(pwgen 16 1)
+
+printf '\n%s\n' ${CAPASS} | /usr/share/elasticsearch/bin/elasticsearch-certutil ca
+
+printf '%s\n\n%s\n' ${CAPASS} ${CERTIFICATEPASS} | /usr/share/elasticsearch/bin/elasticsearch-certutil cert --ca elastic-stack-ca.p12
 
 #es.yml
 
@@ -18,6 +17,12 @@ sed -i '/.*xpack.security.transport.ssl.client_authentication.*/ s/^#//' /etc/el
 sed -i '/.*xpack.security.transport.ssl.keystore.path.*/ s/^#//' /etc/elasticsearch/elasticsearch.yml
 sed -i '/.*xpack.security.transport.ssl.truststore.path.*/ s/^#//' /etc/elasticsearch/elasticsearch.yml
 
-./bin/elasticsearch-keystore add xpack.security.transport.ssl.keystore.secure_password
-#cert password
+mv /usr/share/elasticsearch/elastic-certificates.p12 /etc/elasticsearch/
+sudo chown elasticsearch: /etc/elasticsearch/elastic-certificates.p12
+
+echo -e "certificate authority password: ${CAPASS}"
+echo -e "certificate password: ${CERTIFICATEPASS}"
+
+printf '%s\n' ${CERTIFICATEPASS} | ./bin/elasticsearch-keystore add xpack.security.transport.ssl.keystore.secure_password
+
 
