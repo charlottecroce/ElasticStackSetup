@@ -39,8 +39,8 @@ printf '%s\n' ${CERTIFICATEPASS} | /usr/share/elasticsearch/bin/elasticsearch-ke
 
 echo -e "${CYAN}\nTHESE PASSWORDS ARE NOT STORED ANYWHERE. SAVE THEM SOMEPLACE SAFE${NC}"
 echo -e "${CYAN}|${NC}"
-echo -e "certificate authority password: ${CAPASS}"
-echo -e "certificate password: ${CERTIFICATEPASS}"
+echo -e "${CYAN}certificate authority password: ${CAPASS}${NC}"
+echo -e "${CYAN}certificate password: ${CERTIFICATEPASS}${NC}"
 echo -e "${CYAN}|${NC}"
 
 echo -e "${CYAN}Starting elasticsearch.service${NC}"
