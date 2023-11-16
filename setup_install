@@ -103,7 +103,7 @@ systemctl start filebeat.service
 
 
 # Display Service Status
-bash ./status_Elastic_services.bash
+bash ./status_services
 
 # Runtime Stats
 end_time=`date +%s`
