@@ -21,7 +21,7 @@ mv /usr/share/elasticsearch/elastic-certificates.p12 /etc/elasticsearch/
 sudo chown elasticsearch: /etc/elasticsearch/elastic-certificates.p12
 
 printf '%s\n' ${CERTIFICATEPASS} | /usr/share/elasticsearch/bin/elasticsearch-keystore add xpack.security.transport.ssl.keystore.secure_password
-printf '%s\n' ${CERTIFICATEPASS} | /usr/share/elasticsearch/bin/elasticsearch-keystore add xpack.security.truststore.ssl.keystore.secure_password
+printf '%s\n' ${CERTIFICATEPASS} | /usr/share/elasticsearch/bin/elasticsearch-keystore add xpack.security.transport.ssl.truststore.secure_password
 
 echo -e "certificate authority password: ${CAPASS}"
 echo -e "certificate password: ${CERTIFICATEPASS}"
