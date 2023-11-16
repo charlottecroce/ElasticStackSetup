@@ -1,3 +1,6 @@
+#!/bin/bash
+#
+# REMEMBER TO SAVE PASSWORDS
 #
 # must be run as root
 # must be run after setup_install and setup_passwords have both been run
