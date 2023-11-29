@@ -28,6 +28,10 @@ printf '%s\n\n%s\n' ${CAPASS} ${CERTIFICATEPASS} | /usr/share/elasticsearch/bin/
 printf '%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n\n%s\n%s\n\n%s\n%s\n%s\n%s\n\n' 'n' 'y' '/usr/share/elasticsearch/elastic-stack-ca.p12' ${CAPASS} '2y' 'y' 'node-1' ${HOSTNAME} 'y' '192.168.103.36' 'y' 'n' 'n' ${HTTPPASS} | /usr/share/elasticsearch/bin/elasticsearch-certutil http
 unzip /usr/share/elasticsearch/elasticsearch-ssl-http.zip
 
+
+printf '\n' | /usr/share/elasticsearch/bin/elasticsearch-certutil csr -name kibana-server -dns crocekibana.com,www.crocekibana.com
+
+
 echo -e "${CYAN}Moving certificates to /etc/elasticsearch directory${NC}"
 mv /usr/share/elasticsearch/elastic-certificates.p12 /etc/elasticsearch/
 chown elasticsearch: /etc/elasticsearch/elastic-certificates.p12
@@ -37,7 +41,8 @@ chown elasticsearch: /etc/elasticsearch/http.p12
 echo -e "${CYAN}Moving certificates to /etc/kibana directory${NC}"
 mv /usr/share/elasticsearch/kibana/elasticsearch-ca.pem /etc/kibana/
 chown elasticsearch: /etc/kibana/elasticsearch-ca.pem
-
+mv /usr/share/elasticsearch/kibana-server/kibana-server.key /etc/kibana/
+chown elasticsearch: /etc/kibana/kibana-server.key
 
 echo -e "${CYAN}Configuring elasticsearch.yml file${NC}"
 sed -i '/.*cluster.name.*/ s/^#//' /etc/elasticsearch/elasticsearch.yml
@@ -53,6 +58,8 @@ sed -i '/.*xpack.security.http.ssl.keystore.path.*/ s/^#//' /etc/elasticsearch/e
 echo -e "${CYAN}Configuring kibana.yml file${NC}"
 sed -i 's/.elasticsearch.hosts.*/elasticsearch.hosts: https://localhost:9200/' /etc/kibana/kibana.yml
 sed -i '/.*elasticsearch.ssl.certificateAuthorities.*/ s/^#//' /etc/kibana/kibana.yml
+sed -i '/.*server.ssl.certificate.*/ s/^#//' /etc/kibana/kibana.yml
+sed -i '/.*server.ssl.key.*/ s/^#//' /etc/kibana/kibana.yml
 
 echo -e "${CYAN}Adding certificate passwords to elasticsearch-keystore${NC}"
 printf '%s\n' ${CERTIFICATEPASS} | /usr/share/elasticsearch/bin/elasticsearch-keystore add xpack.security.transport.ssl.keystore.secure_password
