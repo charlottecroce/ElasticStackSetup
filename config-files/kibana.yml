@@ -13,4 +13,5 @@ xpack.security.encryptionKey: "5qWdAoNqEGTSRSkjbV4Z8yi3Aro1tmYM"
 xpack.reporting.encryptionKey: "lr9tH2GY2i07Ig0AtkTYCFABTXfuZGsK"
 
 #elasticsearch.ssl.certificateAuthorities: /etc/kibana/elasticsearch-ca.pem
-
+#server.ssl.certificate: /etc/kibana/kibana-server.crt
+#server.ssl.key: /etc/kibana/kibana-server.key
