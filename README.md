@@ -1,7 +1,7 @@
 # ElasticStackSetup
 
 > [!Note]
-> As of 11/16/23, this will build an Elastic Stack v.7.17 with some security features enabled. HTTPS will be configured next week
+> As of 11/29/23. setting up passwords prevents kibana from retreiving ES logs due to authentication errors
 
 ![elkbanner](https://github.com/nathancroce/ElasticStackSetup/assets/90940521/832c0fbb-ca52-4099-9ad9-4b600c1af64d)
 
