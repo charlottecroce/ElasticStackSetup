@@ -2,7 +2,7 @@
 server.port: 5601
 server.host: 0.0.0.0
 
-#server.name: "your-hostname"
+server.name: kibana-server
 
 elasticsearch.hosts: http://localhost:9200
 elasticsearch.username: "kibana_system"
