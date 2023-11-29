@@ -4,10 +4,13 @@ server.host: 0.0.0.0
 
 #server.name: "your-hostname"
 
-elasticsearch.hosts: ["http://localhost:9200"]
+elasticsearch.hosts: http://localhost:9200
 elasticsearch.username: "kibana_system"
 elasticsearch.password: "changeme"
 
 xpack.encryptedSavedObjects.encryptionKey: "GXlGRCx7GpnjBFXmQtbcvZpdBedJxiYy"
 xpack.security.encryptionKey: "5qWdAoNqEGTSRSkjbV4Z8yi3Aro1tmYM"
 xpack.reporting.encryptionKey: "lr9tH2GY2i07Ig0AtkTYCFABTXfuZGsK"
+
+#elasticsearch.ssl.certificateAuthorities: /etc/kibana/elasticsearch-ca.pem
+
