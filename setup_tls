@@ -1,15 +1,18 @@
 #!/bin/bash
 #
-# REMEMBER TO SAVE PASSWORDS
+# So far, this creates TLS for elasticsearch, but not kibana b/c we still need to sign a self-signed certificate using our .csr
+# setup_passwords also causes problems with authenticating the kibana_system user so development on this script has stopped
 #
-# must be run as root
-# must be run after setup_install and setup_passwords have both been run
+# REMEMBER TO SAVE PASSWORDS
+# must be run as root & must be run after setup_install and setup_passwords have both been run
 #
 
+# For cyan color output
 CYAN='\033[1;36m'
 NC='\033[0m'
 
-apt install unzip
+# Dependencies
+apt install unzip # to unzip http certificates
 
 echo -e "${CYAN}Stopping elasticsearch.service${NC}"
 systemctl stop elasticsearch.service
@@ -17,32 +20,36 @@ echo -e "${CYAN}Stopping kibana.service${NC}"
 systemctl stop kibana.service
 
 echo -e "${CYAN}Generating random passwords for CA and certificate${NC}"
-CAPASS=$(pwgen 16 1)
-CERTIFICATEPASS=$(pwgen 16 1)
-HTTPPASS=$(pwgen 16 1)
-HOSTNAME=$(hostname)
+CAPASS=$(pwgen 16 1) #elastic-stack-ca.p12
+CERTIFICATEPASS=$(pwgen 16 1) #elastic-certificates.p12
+HTTPPASS=$(pwgen 16 1) #http.p12
 
 echo -e "${CYAN}Creating CA and certificates${NC}"
+# create local certificate authority
 printf '\n%s\n' ${CAPASS} | /usr/share/elasticsearch/bin/elasticsearch-certutil ca
+# create certificates for encryption using local CA
 printf '%s\n\n%s\n' ${CAPASS} ${CERTIFICATEPASS} | /usr/share/elasticsearch/bin/elasticsearch-certutil cert --ca elastic-stack-ca.p12
+# create http certificate for https connection
+HOSTNAME=$(hostname) 
 printf '%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n\n%s\n%s\n\n%s\n%s\n%s\n%s\n\n' 'n' 'y' '/usr/share/elasticsearch/elastic-stack-ca.p12' ${CAPASS} '2y' 'y' 'node-1' ${HOSTNAME} 'y' '192.168.103.36' 'y' 'n' 'n' ${HTTPPASS} | /usr/share/elasticsearch/bin/elasticsearch-certutil http
 unzip /usr/share/elasticsearch/elasticsearch-ssl-http.zip
 
-
-#printf '\n' | /usr/share/elasticsearch/bin/elasticsearch-certutil csr -name kibana-server -dns crocekibana.com,www.crocekibana.com
-
+#kibana https configuration - not done yet, still need to self-sign certificate
+#printf '\n' | /usr/share/elasticsearch/bin/elasticsearch-certutil csr -name kibana-server -dns kibana.com,www.kibana.com
+#mv /usr/share/elasticsearch/kibana-server/kibana-server.key /etc/kibana/
+#chown kibana: /etc/kibana/kibana-server.key #kibana user should own their certificates
+#sed -i '/.*server.ssl.certificate.*/ s/^#//' /etc/kibana/kibana.yml
+#sed -i '/.*server.ssl.key.*/ s/^#//' /etc/kibana/kibana.yml
 
 echo -e "${CYAN}Moving certificates to /etc/elasticsearch directory${NC}"
 mv /usr/share/elasticsearch/elastic-certificates.p12 /etc/elasticsearch/
-chown elasticsearch: /etc/elasticsearch/elastic-certificates.p12
+chown elasticsearch: /etc/elasticsearch/elastic-certificates.p12 #elasticsearch user should own their certificates
 mv /usr/share/elasticsearch/elasticsearch/http.p12 /etc/elasticsearch/
-chown elasticsearch: /etc/elasticsearch/http.p12
+chown elasticsearch: /etc/elasticsearch/http.p12 #elasticsearch user should own their certificates
 
 echo -e "${CYAN}Moving certificates to /etc/kibana directory${NC}"
 mv /usr/share/elasticsearch/kibana/elasticsearch-ca.pem /etc/kibana/
-chown elasticsearch: /etc/kibana/elasticsearch-ca.pem
-#mv /usr/share/elasticsearch/kibana-server/kibana-server.key /etc/kibana/
-#chown elasticsearch: /etc/kibana/kibana-server.key
+chown elasticsearch: /etc/kibana/elasticsearch-ca.pem #elasticsearch user should own their certificates
 
 echo -e "${CYAN}Configuring elasticsearch.yml file${NC}"
 sed -i '/.*cluster.name.*/ s/^#//' /etc/elasticsearch/elasticsearch.yml
@@ -58,13 +65,16 @@ sed -i '/.*xpack.security.http.ssl.keystore.path.*/ s/^#//' /etc/elasticsearch/e
 echo -e "${CYAN}Configuring kibana.yml file${NC}"
 sed -i 's/.elasticsearch.hosts.*/elasticsearch.hosts: https://localhost:9200/' /etc/kibana/kibana.yml
 sed -i '/.*elasticsearch.ssl.certificateAuthorities.*/ s/^#//' /etc/kibana/kibana.yml
-#sed -i '/.*server.ssl.certificate.*/ s/^#//' /etc/kibana/kibana.yml
-#sed -i '/.*server.ssl.key.*/ s/^#//' /etc/kibana/kibana.yml
 
 echo -e "${CYAN}Adding certificate passwords to elasticsearch-keystore${NC}"
 printf '%s\n' ${CERTIFICATEPASS} | /usr/share/elasticsearch/bin/elasticsearch-keystore add xpack.security.transport.ssl.keystore.secure_password
 printf '%s\n' ${CERTIFICATEPASS} | /usr/share/elasticsearch/bin/elasticsearch-keystore add xpack.security.transport.ssl.truststore.secure_password
 printf '%s\n' ${HTTPPASS} | /usr/share/elasticsearch/bin/elasticsearch-keystore add xpack.security.http.ssl.keystore.secure_password
+
+echo -e "${CYAN}Starting elasticsearch.service${NC}"
+systemctl start elasticsearch.service
+echo -e "${CYAN}Starting kibana.service${NC}"
+systemctl start kibana.service
 
 echo -e "${CYAN}\nTHESE PASSWORDS ARE NOT STORED ANYWHERE. SAVE THEM SOMEPLACE SAFE${NC}"
 echo -e "${CYAN}|${NC}"
@@ -72,11 +82,3 @@ echo -e "${CYAN}certificate authority password: ${CAPASS}${NC}"
 echo -e "${CYAN}certificate password: ${CERTIFICATEPASS}${NC}"
 echo -e "${CYAN}HTTP certificate password: ${HTTPPASS}${NC}"
 echo -e "${CYAN}|${NC}"
-
-
-echo -e "${CYAN}Starting elasticsearch.service${NC}"
-systemctl start elasticsearch.service
-echo -e "${CYAN}Starting kibana.service${NC}"
-systemctl start kibana.service
-
-
